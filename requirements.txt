@@ -1,0 +1,10 @@
+# ============================================
+# File: requirements.txt
+# ============================================
+pandas
+sentence-transformers
+pdfminer.six
+python-docx
+streamlit
+torch
+numpy<2.0
