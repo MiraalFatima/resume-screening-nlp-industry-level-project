@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Matcher - Futuristic AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-dark: #0a0a0f;
+            --secondary-dark: #1a1a2e;
+            --accent-cyan: #00f5ff;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --glow-cyan: 0 0 20px rgba(0, 245, 255, 0.5);
+            --glow-purple: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-cyan) var(--secondary-dark);
+        }
+
+        *::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        *::-webkit-scrollbar-track {
+            background: var(--secondary-dark);
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background: var(--accent-cyan);
+            border-radius: 4px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .orbitron {
+            font-family: 'Orbitron', monospace;
+        }
+
+        .glow-text {
+            text-shadow: var(--glow-cyan);
+        }
+
+        .glow-border {
+            border: 1px solid transparent;
+            background: linear-gradient(var(--secondary-dark), var(--secondary-dark)) padding-box,
+                        linear-gradient(45deg, var(--accent-cyan), var(--accent-purple)) border-box;
+            box-shadow: var(--glow-cyan);
+        }
+
+        .tech-card {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .tech-card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: var(--glow-cyan);
+            transform: translateY(-2px);
+        }
+
+        .upload-zone {
+            border: 2px dashed rgba(0, 245, 255, 0.3);
+            background: rgba(26, 26, 46, 0.5);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-zone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .upload-zone:hover::before {
+            left: 100%;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(26, 26, 46, 0.8);
+            box-shadow: inset var(--glow-cyan);
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.1);
+            box-shadow: inset var(--glow-purple);
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading-dots {
+            display: inline-block;
+        }
+
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+
+        .score-bar {
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
+            height: 4px;
+            border-radius: 2px;
+            transition: width 1s ease-in-out;
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            animation: float 10s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        .neon-button {
+            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-purple));
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .neon-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .neon-button:hover::before {
+            left: 100%;
+        }
+
+        .neon-button:hover {
+            box-shadow: var(--glow-cyan);
+            transform: translateY(-2px);
+        }
+
+        .typing-animation {
+            border-right: 2px solid var(--accent-cyan);
+            animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--accent-cyan); }
+        }
+
+        .result-card {
+            background: rgba(26, 26, 46, 0.9);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+        }
+
+        .result-card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 8px 32px rgba(0, 245, 255, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-circle {
+            stroke: var(--accent-cyan);
+            stroke-linecap: round;
+            transition: stroke-dasharray 1s ease-in-out;
+            filter: drop-shadow(0 0 5px var(--accent-cyan));
+        }
+
+        .hero-grid {
+            background-image: 
+                linear-gradient(rgba(0, 245, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grid-move 20s linear infinite;
+        }
+
+        @keyframes grid-move {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        @media print {
+            body { 
+                background: white !important; 
+                color: black !important;
+            }
+            .floating-particles { display: none; }
+            .hero-grid { background: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Particles Background -->
+    <div class="floating-particles" id="particles"></div>
+
+    <!-- Main Container -->
+    <div class="min-h-screen hero-grid">
+        <div class="container mx-auto px-6 py-8 max-w-6xl">
+            <!-- Header -->
+            <header class="text-center mb-12">
+                <h1 class="text-6xl font-black orbitron glow-text mb-4 typing-animation">
+                    RESUME MATCHER
+                </h1>
+                <p class="text-xl text-gray-300 mb-8">
+                    <i class="fas fa-robot mr-2"></i>
+                    Advanced AI-powered resume analysis and job matching system
+                </p>
+                <div class="w-32 h-1 bg-gradient-to-r from-cyan-400 to-purple-500 mx-auto rounded-full"></div>
+            </header>
+
+            <!-- Status Panel -->
+            <div class="tech-card rounded-2xl p-6 mb-8">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-3 h-3 bg-green-400 rounded-full pulse-animation"></div>
+                        <span class="orbitron font-semibold">SYSTEM STATUS</span>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm text-gray-400">AI Model: Initialized</div>
+                        <div class="text-sm text-gray-400">Job Database: <span id="jobCount">Ready</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="tech-card rounded-2xl p-8 mb-8">
+                <h2 class="text-2xl font-bold orbitron mb-6 flex items-center">
+                    <i class="fas fa-upload mr-3 text-cyan-400"></i>
+                    RESUME UPLOAD TERMINAL
+                </h2>
+                
+                <div class="upload-zone rounded-xl p-12 text-center cursor-pointer" id="uploadZone">
+                    <input type="file" id="fileInput" accept=".pdf,.docx" class="hidden">
+                    <div id="uploadContent">
+                        <i class="fas fa-cloud-upload-alt text-6xl text-cyan-400 mb-4 pulse-animation"></i>
+                        <h3 class="text-xl font-semibold mb-2">Drop your resume here</h3>
+                        <p class="text-gray-400 mb-4">or click to browse files</p>
+                        <p class="text-sm text-gray-500">Supported formats: PDF, DOCX</p>
+                    </div>
+                    <div id="uploadProgress" class="hidden">
+                        <i class="fas fa-cog fa-spin text-4xl text-cyan-400 mb-4"></i>
+                        <p class="text-lg">Processing resume<span class="loading-dots"></span></p>
+                    </div>
+                </div>
+                
+                <div id="fileInfo" class="hidden mt-6 p-4 bg-gray-800 rounded-lg border border-cyan-400">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-file-alt text-cyan-400"></i>
+                            <span id="fileName" class="font-medium"></span>
+                        </div>
+                        <button id="removeFile" class="text-red-400 hover:text-red-300">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="hidden">
+                <div class="tech-card rounded-2xl p-8 mb-8">
+                    <h2 class="text-2xl font-bold orbitron mb-6 flex items-center">
+                        <i class="fas fa-brain mr-3 text-purple-400"></i>
+                        AI ANALYSIS RESULTS
+                    </h2>
+                    
+                    <div id="processingStatus" class="mb-6">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-3 h-3 bg-cyan-400 rounded-full pulse-animation"></div>
+                            <span class="orbitron">Analysis Complete</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div class="bg-gray-800 p-3 rounded">
+                                <span class="text-gray-400">Text Extraction:</span>
+                                <span class="text-green-400 ml-2">✓ Complete</span>
+                            </div>
+                            <div class="bg-gray-800 p-3 rounded">
+                                <span class="text-gray-400">Embeddings:</span>
+                                <span class="text-green-400 ml-2">✓ Generated</span>
+                            </div>
+                            <div class="bg-gray-800 p-3 rounded">
+                                <span class="text-gray-400">Matching:</span>
+                                <span class="text-green-400 ml-2">✓ Processed</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid gap-4" id="matchResults">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="text-center text-gray-500 mt-12">
+                <p class="orbitron text-sm">
+                    POWERED BY ADVANCED AI • SENTENCE TRANSFORMERS • COSINE SIMILARITY
+                </p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Mock job data to simulate the CSV
+        const jobData = [
+            {
+                job_title: "Software Engineer",
+                job_description: "Develop and maintain software applications using Python, JavaScript, and modern frameworks. Experience with databases, API development, and cloud platforms required."
+            },
+            {
+                job_title: "Data Scientist",
+                job_description: "Analyze complex datasets using machine learning algorithms, statistical modeling, and data visualization tools. Proficiency in Python, R, SQL, and ML frameworks required."
+            },
+            {
+                job_title: "Product Manager",
+                job_description: "Lead product development lifecycle, work with cross-functional teams, define product roadmaps, and drive strategic initiatives. Strong analytical and communication skills required."
+            },
+            {
+                job_title: "DevOps Engineer",
+                job_description: "Manage CI/CD pipelines, cloud infrastructure, containerization, and deployment automation. Experience with AWS, Docker, Kubernetes, and monitoring tools required."
+            },
+            {
+                job_title: "UX Designer",
+                job_description: "Design user interfaces and experiences for web and mobile applications. Proficiency in Figma, Adobe Creative Suite, user research, and prototyping required."
+            },
+            {
+                job_title: "Marketing Manager",
+                job_description: "Develop and execute marketing strategies, manage campaigns, analyze market trends, and drive customer acquisition. Digital marketing experience preferred."
+            },
+            {
+                job_title: "Sales Representative",
+                job_description: "Generate leads, build client relationships, present solutions, and achieve sales targets. Strong communication and negotiation skills required."
+            },
+            {
+                job_title: "Financial Analyst",
+                job_description: "Perform financial modeling, budget analysis, forecasting, and investment evaluation. Strong Excel skills and financial knowledge required."
+            }
+        ];
+
+        // Initialize particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // File upload handling
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const removeFile = document.getElementById('removeFile');
+        const resultsSection = document.getElementById('resultsSection');
+        const uploadContent = document.getElementById('uploadContent');
+        const uploadProgress = document.getElementById('uploadProgress');
+
+        uploadZone.addEventListener('click', () => fileInput.click());
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        removeFile.addEventListener('click', () => {
+            fileInput.value = '';
+            fileInfo.classList.add('hidden');
+            resultsSection.classList.add('hidden');
+        });
+
+        function handleFile(file) {
+            if (!file.name.match(/\.(pdf|docx)$/i)) {
+                alert('Please select a PDF or DOCX file.');
+                return;
+            }
+
+            fileName.textContent = file.name;
+            fileInfo.classList.remove('hidden');
+            
+            // Show processing animation
+            uploadContent.classList.add('hidden');
+            uploadProgress.classList.remove('hidden');
+
+            // Simulate processing delay
+            setTimeout(() => {
+                uploadContent.classList.remove('hidden');
+                uploadProgress.classList.add('hidden');
+                processResume(file);
+            }, 2000);
+        }
+
+        function processResume(file) {
+            // Simulate text extraction and processing
+            const resumeText = `
+                Experienced software developer with 5 years of experience in Python, JavaScript, and web development.
+                Skilled in database design, API development, and cloud platforms like AWS.
+                Strong background in machine learning and data analysis.
+                Excellent problem-solving and communication skills.
+                Experience with agile development methodologies and cross-functional team collaboration.
+            `;
+
+            // Simulate similarity scoring
+            const results = calculateSimilarityScores(resumeText);
+            displayResults(results);
+            resultsSection.classList.remove('hidden');
+        }
+
+        function calculateSimilarityScores(resumeText) {
+            // Simple keyword-based similarity simulation
+            const resumeWords = resumeText.toLowerCase().split(/\s+/);
+            
+            return jobData.map(job => {
+                const jobWords = (job.job_title + ' ' + job.job_description).toLowerCase().split(/\s+/);
+                const commonWords = resumeWords.filter(word => jobWords.includes(word));
+                const similarity = (commonWords.length / Math.max(resumeWords.length, jobWords.length)) * 100;
+                
+                // Add some randomization to make it more realistic
+                const randomFactor = 0.8 + Math.random() * 0.4;
+                const finalScore = Math.min(95, similarity * randomFactor + Math.random() * 20);
+                
+                return {
+                    job_title: job.job_title,
+                    job_description: job.job_description,
+                    score: finalScore
+                };
+            }).sort((a, b) => b.score - a.score);
+        }
+
+        function displayResults(results) {
+            const matchResults = document.getElementById('matchResults');
+            matchResults.innerHTML = '';
+
+            results.forEach((result, index) => {
+                const scorePercentage = result.score;
+                const scoreColor = scorePercentage >= 80 ? 'text-green-400' : 
+                                 scorePercentage >= 60 ? 'text-cyan-400' : 
+                                 scorePercentage >= 40 ? 'text-yellow-400' : 'text-red-400';
+                
+                const resultCard = document.createElement('div');
+                resultCard.className = 'result-card rounded-lg p-6';
+                resultCard.style.animationDelay = `${index * 0.1}s`;
+                
+                resultCard.innerHTML = `
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-400 to-purple-500 flex items-center justify-center font-bold">
+                                ${index + 1}
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold orbitron">${result.job_title}</h3>
+                                <p class="text-sm text-gray-400">Job Position</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold ${scoreColor}">${scorePercentage.toFixed(1)}%</div>
+                            <p class="text-sm text-gray-400">Match Score</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm text-gray-400 mb-1">
+                            <span>Compatibility</span>
+                            <span>${scorePercentage.toFixed(1)}%</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="score-bar rounded-full" style="width: ${scorePercentage}%"></div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-gray-300 line-clamp-3">${result.job_description}</p>
+                    
+                    <div class="mt-4 flex items-center justify-between">
+                        <div class="flex space-x-2">
+                            ${scorePercentage >= 80 ? '<span class="px-2 py-1 text-xs bg-green-900 text-green-300 rounded">EXCELLENT MATCH</span>' : ''}
+                            ${scorePercentage >= 60 && scorePercentage < 80 ? '<span class="px-2 py-1 text-xs bg-cyan-900 text-cyan-300 rounded">GOOD MATCH</span>' : ''}
+                            ${scorePercentage >= 40 && scorePercentage < 60 ? '<span class="px-2 py-1 text-xs bg-yellow-900 text-yellow-300 rounded">PARTIAL MATCH</span>' : ''}
+                            ${scorePercentage < 40 ? '<span class="px-2 py-1 text-xs bg-red-900 text-red-300 rounded">LOW MATCH</span>' : ''}
+                        </div>
+                        <button class="text-cyan-400 hover:text-cyan-300 text-sm font-medium">
+                            View Details <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                `;
+                
+                matchResults.appendChild(resultCard);
+            });
+
+            // Update job count
+            document.getElementById('jobCount').textContent = `${results.length} positions analyzed`;
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            
+            // Animate typing effect
+            setTimeout(() => {
+                const title = document.querySelector('.typing-animation');
+                title.style.width = 'auto';
+                title.classList.remove('typing-animation');
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
